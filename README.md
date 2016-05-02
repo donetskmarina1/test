@@ -18,7 +18,7 @@
 
 This tutorial explains how to use the Public Keys Service with SDK library in JavaScript applications. 
 
-## Installation
+## Install
 
 ### NPM
 
