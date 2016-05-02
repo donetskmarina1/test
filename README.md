@@ -1,153 +1,222 @@
 - [Introduction](#introduction)
-- [Prerequisites](#prerequisites)
-    - [Obtaining an Access Token](#obtaining-an-access-token)
-    - [Install](#install)
-- [Use case](#use-case)
-    - [Step 0. Initialization](#step-0-initialization)
-    - [Step 1. Generate and Publish the Keys](#step-1-generate-and-publish-the-keys)
-    - [Step 2. Encrypt and Sign](#step-2-encrypt-and-sign)
-    - [Step 3. Send a Message](#step-3-send-a-message)
-    - [Step 4. Receive a Message](#step-4-receive-a-message)
-    - [Step 5. Verify and Decrypt](#step-5-verify-and-decrypt)
-- [Source code](#source-code)
+- [Install](#install)
+- [Obtaining an Access Token](#obtaining-an-access-token)
+- [Cards and Public Keys](#cards-and-public-keys)
+  - [Publish a Virgil Card](#publish-a-virgil-card)
+  - [Search for Cards](#search-for-cards)
+  - [Revoke a Virgil Card](#revoke-a-virgil-card)
+  - [Get a Public Key](#get-a-public-key)
+- [Private Keys](#private-keys)
+  - [Stash a Private Key](#stash-a-private-key)
+  - [Get a Private Key](#get-a-private-key)
+  - [Destroy a Private Key](#destroy-a-private-key)
+- [Identities](#identities)
+  - [Obtaining a *global* ValidationToken](#obtaining-a-global-validationtoken)
+  - [Obtaining a *private* ValidationToken](#obtaining-a-private-validationtoken)
 
-## Introduction
+##Introduction
 
-In this guide we will get you up and running quickly with a simple IP messaging chat application you can build as you learn more about Virgil Crypto Library and Virgil Keys Services. Sounds like a plan? Then let's get cracking!
+This tutorial explains how to use the Public Keys Service with SDK library in .NET applications. 
 
-On the diagram below you can see a full picture of how these things interact with each other. ![Use case mail](https://raw.githubusercontent.com/VirgilSecurity/virgil/master/images/IPMessaging.jpg)
+##Install
 
-## Prerequisites
-
-1. To begin with, you'll need a Virgil Access Token, which you can obtain by passing a few steps described [here](#obtaining-an-access-token).
-2. You will also need to [install a NuGet package](#install).
-
-### Obtaining an Access Token
-
-First you must create a free Virgil Security developer's account by signing up [here](https://developer.virgilsecurity.com/account/signup). Once you have your account you can [sign in](https://developer.virgilsecurity.com/account/signin) and generate an access token for your application.
-
-The access token provides authenticated secure access to Virgil Keys Services and is passed with every API call. The access token also allows the API to associate your app’s requests with your Virgil Security developer's account.
-
-Use this token to initialize the SDK client [here](#step-0-initialization).
-
-### Install
-
-Use NuGet Package Manager (Tools -> Library Package Manager -> Package Manager Console) to install Virgil.SDK package, running the command:
+Use NuGet Package Manager (Tools -> Library Package Manager -> Package Manager Console) to install Virgil.SDK package running the command:
 
 ```
 PM> Install-Package Virgil.SDK
 ```
 
-## Use Case
-**Secure any data end to end**: users need to securely exchange information (text messages, files, audio, video etc) while enabling both in transit and at rest protection. 
+##Obtaining an Access Token
 
-- Application generates public and private key pairs using Virgil Crypto library and uses Virgil Keys service to enable secure end to end communications:
-    - public key on Virgil Public Keys Service;
-    - private key on Virgil Private Keys Service or locally.
-- Sender’s information is encrypted in Virgil Crypto Library with the recipient’s public key.
-- Sender’s encrypted information is signed with his private key in Virgil Crypto Library.
-- Application securely transfers the encrypted data, sender’s digital signature and UDID to the recipient without any risk to be revealed.
-- Application on the recipient’s side verifies that the signature of transferred data is valid using the signature and sender’s public key in Virgil Crypto Library.
-- The received information is decrypted with the recipient’s private key using Virgil Crypto Library.
-- Decrypted data is provided to the recipient.
+First you must create a Virgil Security developer's account by signing up [here](https://developer.virgilsecurity.com/account/signup). Once you have your account you can [sign in](https://developer.virgilsecurity.com/account/signin) and generate an access token for your application.
 
-### Step 0. Initialization
+The access token provides an authenticated secure access to the Public Keys Service and is passed with each API call. The access token also allows the API to associate your app’s requests with your Virgil Security developer's account.
 
-Initialize the service Hub instance using access token obtained [here...](#obtaining-an-access-token)
+Simply add your access token to the class builder.
 
 ```csharp
-ServiceHub = ServiceHub.Create("%ACCESS_TOKEN%");
-```
+var serviceHub = ServiceHub.Create("%ACCESS_TOKEN%");
+``` 
 
-### Step 1. Generate and Publish the Keys
-First a simple IP messaging chat application is generating the keys and publishing them to the Public Keys Service where they are available in open access for other users (e.g. recipient) to verify and encrypt the data for the key owner.
+## Cards and Public Keys
 
-The following code example generates a new public/private key pair.
+A Virgil Card is the main entity of the Public Keys Service, it includes the information about the user and his public key. The Virgil Card identifies the user by one of his available types, such as an email, a phone number, etc.
+
+The Virgil Card might be *global* and *private*. The difference is whether Virgil Services take part in [the Identity verification](#identities). 
+
+*Global Cards* are created with the validation token received after verification in Virgil Identity Service. Any developer with Virgil account can create a global Virgil Card and you can be sure that the account with a particular email has been verified and the email owner is really the Identity owner.
+
+*Private Cards* are created when a developer is using his own service for verification instead of Virgil Identity Service or avoids verification at all. In this case validation token is generated using app's Private Key created on our [Developer portal](https://developer.virgilsecurity.com/dashboard/).   
+
+#### Publish a Virgil Card
+
+Creating a *private* Virgil Card with a newly generated key pair and **ValidationToken**. See how to obtain a **ValidationToken** [here...](#obtaining-a-private-validationtoken)
 
 ```csharp
 var keyPair = VirgilKeyPair.Generate();
-```
 
-The app is registering a Virgil Card which includes a public key and an email address identifier. The Card will be used for the public key identification and searching for it in the Public Keys Service. You can create a Virgil Card with or without identity verification, see both examples [here...](/api-docs/dot-net-csharp/keys-sdk#publish-a-virgil-card)  
-
-```csharp
-var senderEmailAddress = 'sender@virgilsecurity.com';
-var emailVerifier = await serviceHub.Identity.
-VerifyEmail(senderEmailAddress);
-
-// Confirm an identity using code received to email box.
-
-var authorizedIdentity = emailVerifier.Confirm("%CONFIRMATION_CODE%")
-
-var card = await serviceHub.Cards.Create(authorizedIdentity, 
-keyPair.PublicKey(), keyPair.PrivateKey());
-```
-
-### Step 2. Encrypt and Sign
-The app is searching for all channel members' public keys on the Keys Service to encrypt a message for them. The app is signing the encrypted message with sender’s private key so that the recipient can make sure the message had been sent by the declared sender.
-
-```csharp
-var messageBytes = Encoding.UTF8.GetBytes(message);
-
-var channelRecipients = await this.GetChannelRecipients();
- 
-var encryptedMessage = CryptoHelper.Encrypt(messageBytes, 
-channelRecipients);
-var sign = CryptoHelper.Sign(encryptedMessage, 
-             this.currentMember.PrivateKey);
-```
-
-### Step 3. Send a Message
-The app merges the message text and the signature into one [structure](https://github.com/VirgilSecurity/virgil-sdk-net/blob/master/Examples/Virgil.Examples.IPMessaging/EncryptedMessageModel.cs) then serializes it to json string and sends the message to the channel using a simple IP messaging client.
-
-> We will be using our custom IP Messaging Server in our examples, you may need to adjust the code for your favorite IP Messaging Server.
-
-```csharp
-var encryptedModel = new EncryptedMessageModel
-{
-    Message = encryptedMessage,
-    Sign = sign
+var identity = new IdentityInfo {
+    Value = "demo_virgil",
+    Type = "username",
+    ValidationToken = "%VALIDATION_TOKEN%"
 };
 
-var encryptedModelJson = JsonConvert.SerializeObject(encryptedModel);
-await this.channel.SendMessage(encryptedModelJson);
+var myCard = await serviceHub.Cards
+    .Create(identity, keyPair.PublicKey(), keyPair.PrivateKey());
 ```
-
-### Step 4. Receive a Message
-An encrypted message is received on the recipient’s side using an IP messaging client. 
-In order to decrypt and verify the received data, the app on recipient’s side needs to get sender’s Virgil Card from the Keys Service.
+​
+Creating an unauthorized *private* Virgil Card without **ValidationToken**. Pay attention that you will have to set an additional attribute to include the private Cards without verification into your search, see an [example](#search-for-cards).
 
 ```csharp
-private async Task OnMessageRecived(string sender, string message)
-{
-    var encryptedModel = JsonConvert
-        .DeserializeObject<EncryptedMessageModel>(message);
+var keyPair = VirgilKeyPair.Generate();
+
+var identity = new IdentityInfo {
+    Value = "demo_virgil",
+    Type = "username"
+};
+
+var myCard = await serviceHub.Cards
+    .Create(identity, keyPair.PublicKey(), keyPair.PrivateKey());
+```
+
+Creating a *global* Virgil Card. See how to obtain a **ValidationToken** [here...](#obtaining-a-global-validationtoken)
+
+```csharp
+var keyPair = VirgilKeyPair.Generate();
+
+var emailVerifier = await serviceHub.Identity
+    .VerifyEmail("demo@virgilsecurity.com");
+
+// get the confirmation code from received email message.
+
+var authorizedIdentity = await emailVerifier
+     .Confirm("%CONFIRMATION_CODE%");
+
+var myCard = await serviceHub.Cards
+    .Create(authorizedIdentity, keyPair.PublicKey(), keyPair.PrivateKey());
+```
+
+#### Search for Cards
+
+Search for a *global* Virgil Card.
+
+```csharp
+// search for email card.
+
+var emailCards = await serviceHub.Cards
+    .Search("demo@virgilsecurity.com", IdentityType.Email);
+
+// search for application card.
+
+var appCards = await serviceHub.Cards
+    .Search("com.virgilsecurity.mail", IdentityType.Application);
+```
+
+Search for a *private* Virgil Card.
+
+```csharp
+var foundCards = await serviceHub.Cards.Search("virgil_demo");
+
+// or search for Virgil Cards including unauthorized ones.
+
+foundCards = await serviceHub.Cards
+    .Search("virgil_demo", includeUnauthorized: true);
+```
+
+#### Revoke a Virgil Card
+
+This operation is used to delete the Virgil Card from the search and mark it as deleted. 
+
+```csharp
+await serviceHub.Cards.Revoke(myCard.Id, keyPair.PrivateKey());
+```
+
+#### Get a Public Key
+
+This operation gets a public key from the Public Keys Service by the specified ID.
+
+```csharp
+await serviceHub.PublicKeys.Get(myCard.PublicKey.Id);
+```
+
+## Private Keys
+
+The security of private keys is crucial for the public key cryptosystems. Anyone who can obtain a private key can use it to impersonate the rightful owner during all communications and transactions on intranets or on the internet. Therefore, private keys must be in the possession only of authorized users, and they must be protected from unauthorized use.
+
+Virgil Security provides a set of tools and services for storing private keys in a safe storage which lets you synchronize your private keys between the devices and applications.
+
+Usage of this service is optional.
+
+#### Stash a Private Key
+
+Private key can be added for storage only in case you have already registered a public key on the Public Keys Service.
+
+Use the public key identifier on the Public Keys Service to save the private keys. 
+
+The Private Keys Service stores private keys the original way as they were transferred. That's why we strongly recommend transferring the keys which were generated with a password.
+
+```csharp
+await serviceHub.PrivateKeys.Stash(myCard.Id, keyPair.PrivateKey());
+```
+
+#### Get a Private Key
+
+This operation is used to get a private key you need to pass a prior verification of the Virgil Card where your public key is used. And to obtain a **ValidationToken** depending on your Virgil Card ([global](#obtaining-a-global-validationtoken) or [private](#obtaining-a-private-validationtoken)).
+  
+```csharp
+var identityInfo = new IdentityInfo {
+    Value = "demo@virgilsecurity.com",
+    Type = "email",
+    ValidationToken = "%VALIDATION_TOKEN%"
+}
+
+var privateKey = await serviceHub.PrivateKeys.Get(myCard.Id, identityInfo);
+```
+
+#### Destroy a Private Key
+
+This operation deletes the private key from the service without a possibility to be restored. 
+  
+```csharp
+await serviceHub.PrivateKeys.Destroy(myCard.Id, keyPair.PrivateKey());
+```
+
+## Identities
+
+#### Obtaining a *global* ValidationToken
+
+The *global* **ValidationToken** is used for creating *global Cards*. The *global* **ValidationToken** can be obtained only by checking the ownership of the Identity on Virgil Identity Service.
+
+In the example below you can see how to obtain a **ValidationToken** for creating a *global* Virgil Card.
+
+```csharp
+// send a verification request for specified identity type. 
+
+var verificationResponse = await serviceHub.Identity
+    .Verify("test1@virgilsecurity.com", IdentityType.Email);
     
-    var foundCards = await serviceHub.Cards.Search(sender, 
-IdentityType.Email);
-    var senderCard = foundCards.Single();
-    ...
-}
+// confirm an identity using code received on email address.
+    
+var validationToken = (await serviceHub.Identity
+    .Confirm(identityRequest.Id, "%CONFIRMATION_CODE%")).ValidationToken;
 ```
 
-### Step 5. Verify and Decrypt
-The application is making sure the message came from the declared sender by getting his card on Virgil Public Keys Service. In case of success, the message is decrypted using the recipient's private key.
+You can also use the shortcut to verify a specific type.
 
 ```csharp
-var isValid = CryptoHelper.Verify(encryptedModel.EncryptedMessage, 
-    encryptedModel.Signature, senderCard.PublicKey.Value);
+var emailVerifier = await 
+       serviceHub.Identity.VerifyEmail("demo@virgilsecurity.com");
 
-if (!isValid)
-{
-    throw new Exception("The message signature is not valid");
-}
-
-var decryptedMessage =CryptoHelper.Decrypt(encryptedModel.EncryptedMessage, 
-    this.currentMember.CardId.ToString(), this.currentMember.PrivateKey);
+var confirmedIdentity = await emailVerifier.Confirm("%CONFIRMATION_CODE%");
 ```
 
-## Source Code
+#### Obtaining a *private* ValidationToken
 
-* [Use Case Example](https://github.com/VirgilSecurity/virgil-sdk-net/tree/master/Examples/Virgil.Examples.IPMessaging)
-* [IP-Messaging Simple Server](https://github.com/VirgilSecurity/virgil-sdk-javascript/tree/master/examples/ip-messaging/server)
+The *private* **ValidationToken** is used for creating *Private Cards*. The *private* **ValidationToken** can be generated on developer's side using his own service for verification instead of Virgil Identity Service or avoids verification at all. In this case validation token is generated using app's Private Key created on our [Developer portal](https://developer.virgilsecurity.com/dashboard/).   
 
+In the example below you can see, how to generate a **ValidationToken** using the SDK library.
+
+```csharp
+var validationToken = ValidationTokenGenerator
+    .Generate("demo_virgil", "username", %APP_PRIVATE_KEY%);
+```
