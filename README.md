@@ -74,16 +74,16 @@ This section describes how to build Virgil Crypto Library for а particular lang
 <a name="table1"></a>
 Table 1 - Supported languages
 
-| Language | Supported OS               | Dependencies          | Build parameters | Environment |
-|----------|----------------------------|-----------------------|------------------|-------------|
-| C++      | ANY                        |                       | LANG=cpp         |             |
-| PHP      | Unix, Linux, OS X          | php, php5-dev         | LANG=php         |             |
-| Python   | Unix, Linux, OS X          | python                | LANG=python      |             |
-| Ruby     | Unix, Linux, OS X          | ruby, ruby-dev        | LANG=ruby        |             |
-| Java     | Unix, Linux, OS X, Windows\* | Java JDK 1.6          | LANG=java        | JAVA_HOME   |
-| .NET     | Unix, Linux, OS X, Windows\* | .NET 2.0, or mono 2.0 | LANG=net         |             |
-| AsmJS    | Unix, Linux, OS X, Windows\* | Emscripten 1.35       | LANG=asmjs       | EMSDK_HOME  |
-| NodeJS   | Unix, Linux, OS X, Windows\* |                       | LANG=nodejs      |             |
+| Language | Supported OS               | Dependencies          | Build parameters | Environment | Binary |
+|----------|----------------------------|-----------------------|------------------|-------------|--------|
+| C++      | ANY                        |                       | LANG=cpp         |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/cpp/)|
+| PHP      | Unix, Linux, OS X          | php, php5-dev         | LANG=php         |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/php/)|
+| Python   | Unix, Linux, OS X          | python                | LANG=python      |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/python/)
+| Ruby     | Unix, Linux, OS X          | ruby, ruby-dev        | LANG=ruby        |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/ruby/)|
+| Java     | Unix, Linux, OS X, Windows\* | Java JDK 1.6          | LANG=java        | JAVA_HOME   |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/java/)|
+| .NET     | Unix, Linux, OS X, Windows\* | .NET 2.0, or mono 2.0 | LANG=net         |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/net/)|
+| AsmJS    | Unix, Linux, OS X, Windows\* | Emscripten 1.35       | LANG=asmjs       | EMSDK_HOME  |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/asmjs/)|
+| NodeJS   | Unix, Linux, OS X, Windows\* |                       | LANG=nodejs      |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/nodejs/)|
 
 >\* External dependencies for Windows binaries:
 >	- msvcp140.dll
