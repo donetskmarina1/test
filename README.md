@@ -140,16 +140,16 @@ Table 2 - Supported languages and platforms
 | C++         | iOS      | OS X    |                       | TARGET=ios              |             |
 | C++         | WatchOS  | OS X    |                       | TARGET=applewatchos     |             |
 | C++         | TVOS     | OS X    |                       | TARGET=appletvos        |             |
-| C++\*         | Windows  | Windows | msvcp140.dll, vcruntime140.dll                     | TARGET=cpp              |             |
+| C++         | Windows  | Windows | msvcp140.dll\*, vcruntime140.dll\*                     | TARGET=cpp              |             |
 | .NET        | iOS      | OS X    | mono 2.0              | TARGET=net_ios          |             |
 | .NET        | WatchOS  | OS X    | mono 2.0              | TARGET=net_applewatchos |             |
 | .NET        | TVOS     | OS X    | mono 2.0              | TARGET=net_appletvos    |             |
 | .NET        | Android  | *nix    | Android NDK, mono 2.0 | TARGET=net_android      | ANDROID_NDK |
-| .NET\*        | Windows  | Windows | .NET 2.0, msvcp140.dll, vcruntime140.dll              | TARGET=net              |             |
+| .NET        | Windows  | Windows | .NET 2.0, msvcp140.dll\*, vcruntime140.dll\*              | TARGET=net              |             |
 | Java        | Android  | *nix    | Android NDK           | TARGET=java_android     | ANDROID_NDK |
-| Java\*        | Windows  | Windows | Java JDK, msvcp140.dll, vcruntime140.dll              | TARGET=java             | JAVA_HOME   |
-| NodeJS 0.12\* | Windows  | Windows | msvcp140.dll, vcruntime140.dll                       | TARGET=nodejs-0.12.7    |             |
-| NodeJS 4.1\*  | Windows  | Windows | msvcp140.dll, vcruntime140.dll                       | TARGET=nodejs-4.1.0     |             |
+| Java        | Windows  | Windows | Java JDK, msvcp140.dll\*, vcruntime140.dll\*              | TARGET=java             | JAVA_HOME   |
+| NodeJS 0.12 | Windows  | Windows | msvcp140.dll\*, vcruntime140.dll\*                       | TARGET=nodejs-0.12.7    |             |
+| NodeJS 4.1  | Windows  | Windows | msvcp140.dll\*, vcruntime140.dll\*                       | TARGET=nodejs-4.1.0     |             |
 
 >These dependencies can be installed as a part of [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145)
 
