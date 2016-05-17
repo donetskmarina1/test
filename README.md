@@ -134,8 +134,8 @@ This section describes how to build Virgil Crypto Library for multi architecture
 <a name="table2"></a>
 Table 2 - Supported languages and platforms
 
-| Language    | Platform | Host OS | Dependencies          | Build parameters        | Environment |Binary|
-|-------------|----------|---------|-----------------------|-------------------------|-------------|------|
+| Language    | Platform | Host OS | Dependencies          | Build parameters        |Environment|Binary|
+|-------------|----------|---------|-----------------------|-------------------------|-----------|------|
 | C++         | OS X     | OS X    |                       | TARGET=osx              |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/cpp/virgil-crypto-1.6.0-cpp-osx-14.5-universal.tgz)|
 | C++         | iOS      | OS X    |                       | TARGET=ios              |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/cpp/virgil-crypto-1.6.0-cpp-ios-7.0.tgz)|
 | C++         | WatchOS  | OS X    |                       | TARGET=applewatchos     |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/cpp/virgil-crypto-1.6.0-cpp-applewatchos-2.0.tgz)|
