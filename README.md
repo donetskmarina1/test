@@ -140,7 +140,7 @@ Table 2 - Supported languages and platforms
 | C++         | iOS      | OS X |                       | TARGET=ios              |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/cpp/virgil-crypto-1.6.0-cpp-ios-7.0.tgz)|
 | C++         | WatchOS  | OS X |                       | TARGET=applewatchos     |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/cpp/virgil-crypto-1.6.0-cpp-applewatchos-2.0.tgz)|
 | C++         | TVOS     | OS X |                       | TARGET=appletvos        |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/cpp/virgil-crypto-1.6.0-cpp-appletvos-9.0.tgz)|
-| C++         | Windows  | Windows| msvcp140.dll\*, vcruntime140.dll\*                     | TARGET=cpp              |             |[:arrow_down:](virgil-crypto-1.6.0-cpp-windows-6.3-x64.zip)|
+| C++         | Windows  | Windows| msvcp140.dll\*, vcruntime140.dll\*                     | TARGET=cpp              |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/cpp/virgil-crypto-1.6.0-cpp-windows-6.3-x64.zip)|
 | .NET        | iOS      | OS X | mono 2.0              | TARGET=net_ios          |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/net/virgil-crypto-1.6.0-mono-ios-7.0.tgz)|
 | .NET        | WatchOS  | OS X | mono 2.0              | TARGET= net_applewatchos |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/net/virgil-crypto-1.6.0-mono-applewatchos-2.0.tgz)|
 | .NET        | TVOS     | OS X | mono 2.0              | TARGET=net_appletvos    |             |[:arrow_down:](https://cdn.virgilsecurity.com/virgil-crypto/net/virgil-crypto-1.6.0-mono-appletvos-9.0.tgz)|
