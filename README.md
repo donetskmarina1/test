@@ -74,8 +74,8 @@ This section describes how to build Virgil Crypto Library for а particular lang
 <a name="table1"></a>
 Table 1 - Supported languages
 
-| Language | Supported OS               | Dependencies          | Build parameters | Environment | Binary |
-|----------|----------------------------|-----------------------|------------------|-------------|--------|
+|Language| Supported OS               | Dependencies          | Build parameters | Environment | Binary |
+|--------|----------------------------|-----------------------|------------------|-------------|--------|
 | C++      | ANY                        |                       | LANG=cpp         |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/cpp/)|
 | PHP      | Unix, Linux, OS X          | php, php5-dev         | LANG=php         |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/php/)|
 | Python   | Unix, Linux, OS X          | python                | LANG=python      |             |[CDN](https://cdn.virgilsecurity.com/virgil-crypto/python/)
